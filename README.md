@@ -15,11 +15,10 @@ Command line tool which takes a .wav file and a few settings and outputs a numbe
 Settings: 
 * Override quiet-level
 * Length of time for silence-segments
-* Start time and end time of processing
 * Boolean to generate feedback image?
 
 ## Todo
-* Make python tool which accepts input settings
-* Make a window for feedback, or output image?
-
+* Fix so that feedback is optional 
+* Fix so that options are actually used
+*
 
