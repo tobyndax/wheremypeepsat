@@ -25,6 +25,11 @@ if __name__ == '__main__':
     parser.add_argument('--end',
                         type=float,
                         help='End time in ms where to end the processing')
+    parser.add_argument('--feedback',
+                        dest='feedback',
+                        action='store_true',
+                        help='Generates a feedback image')
+    parser.set_defaults(feature=False)
     args = parser.parse_args()
 
     def checkFileValid(filePath):
@@ -59,20 +64,33 @@ if __name__ == '__main__':
         silence_thresh=sound_file.dBFS - 16,
         keep_silence=True
     )
-    offset = 0
-    fig = go.Figure()
-    for i, seg in enumerate(audio_segs):
-        y = np.array(seg.get_array_of_samples())
-        start = offset
-        end = len(seg) + offset
-        offset = end
-        t = np.linspace(start, end ,len(y))
-        fig.add_trace(
-            go.Scatter(x=t, y=y,
-                       mode='lines',
-                       name='lines'))
-    fig.update_layout(showlegend=False)
-    fig.show()
+    if args.feedback:
+        offset = 0
+        subSample = 512
+        fig = go.Figure()
+        for i, seg in enumerate(audio_segs):
+            y = np.array(seg.get_array_of_samples())
+            start = offset
+            end = len(seg) + offset
+            offset = end
+            t = np.linspace(start, end ,len(y))
+            fig.add_trace(
+                go.Scatter(x=t[::subSample]/1000, y=y[::subSample],
+                           mode='lines',
+                           name='lines'))
+        fig.update_layout(showlegend=False)
+        # Add range slider
+        fig.update_layout(
+            xaxis=dict(
+                rangeslider=dict(
+                    visible=True
+                ),
+                type="linear"
+            )
+        )
+        initial_range = [0, 10]
+        fig['layout']['xaxis'].update(range=initial_range)
+        fig.show()
 
     print(len(audio_segs))
 
