@@ -6,7 +6,8 @@ from pydub.silence import split_on_silence
 import plotly.graph_objects as go
 import numpy as np
 
-if __name__ == '__main__':
+
+def createParser():
     parser = argparse.ArgumentParser(
         description='Count the number of distinct sound segments of the .wav file')
 
@@ -30,8 +31,9 @@ if __name__ == '__main__':
                         action='store_true',
                         help='Generates a feedback image')
     parser.set_defaults(feature=False)
-    args = parser.parse_args()
+    return parser
 
+def main(args):
     def checkFileValid(filePath):
         fileExists  = os.path.isfile(filePath)
         fileIsWav = filePath.lower().endswith(".wav")
@@ -59,14 +61,15 @@ if __name__ == '__main__':
     audio_segs = split_on_silence(
         sound_file,
         # must be silent for at least this long
-        min_silence_len=125,
+        min_silence_len=150,
         # consider it silent if quiter than this
         silence_thresh=sound_file.dBFS - 16,
         keep_silence=True
     )
+
     if args.feedback:
         offset = 0
-        subSample = 512
+        subSample = 32
         fig = go.Figure()
         for i, seg in enumerate(audio_segs):
             y = np.array(seg.get_array_of_samples())
@@ -93,4 +96,10 @@ if __name__ == '__main__':
         fig.show()
 
     print(len(audio_segs))
+
+
+if __name__ == '__main__':
+    parser = createParser()
+    args = parser.parse_args()
+    main(args)
 
