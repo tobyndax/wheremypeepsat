@@ -1,7 +1,7 @@
 import sys
 import argparse
 import os
-from pydub import AudioSegment
+from pydub import AudioSegment, utils
 from pydub.silence import split_on_silence
 import plotly.graph_objects as go
 import numpy as np
@@ -56,14 +56,20 @@ def main(args):
     if start > end or start < 0 or end > len(sound_file):
         print("Incorrect start or end values")
         sys.exit(1)
+    if args.sil is not None:
+        silenceLevel = args.sil
+    else:
+        silenceLevel = sound_file.dBFS - 10
 
+
+    silenceScale = sound_file.max_possible_amplitude * utils.db_to_float(silenceLevel)
     sound_file = sound_file[start:end]
     audio_segs = split_on_silence(
         sound_file,
         # must be silent for at least this long
         min_silence_len=150,
         # consider it silent if quiter than this
-        silence_thresh=sound_file.dBFS - 16,
+        silence_thresh=silenceLevel,
         keep_silence=True
     )
 
@@ -81,6 +87,10 @@ def main(args):
                 go.Scatter(x=t[::subSample]/1000, y=y[::subSample],
                            mode='lines',
                            name='lines'))
+        fig.add_trace(
+            go.Scatter(x=np.array([0, end])/1000, y=np.array([silenceScale, silenceScale]),
+                       mode='lines',
+                       name='lines'))
         fig.update_layout(showlegend=False)
         # Add range slider
         fig.update_layout(
@@ -95,11 +105,11 @@ def main(args):
         fig['layout']['xaxis'].update(range=initial_range)
         fig.show()
 
-    print(len(audio_segs))
+    return len(audio_segs)
 
 
 if __name__ == '__main__':
     parser = createParser()
     args = parser.parse_args()
-    main(args)
+    print(main(args))
 
