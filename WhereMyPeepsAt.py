@@ -73,10 +73,33 @@ def main(args):
         keep_silence=True
     )
 
+    # Statistical outlier splitting
+    audio_segs_no_silence = split_on_silence(
+        sound_file,
+        # must be silent for at least this long
+        min_silence_len=150,
+        # consider it silent if quiter than this
+        silence_thresh=silenceLevel
+    )
+
+    # gather the lengths of the audio segments
+    lengths = np.array([])
+    for i, seg in enumerate(audio_segs_no_silence):
+        lengths = np.append(lengths, np.array([len(seg)]))
+
+    mean = np.mean(lengths)
+    std = np.std(lengths)
+    splitCandidates = np.argwhere(lengths > mean + 3*std)
+    splitAdditions = np.round(lengths[splitCandidates]/mean) - 1.0
+    extraPeeps = np.sum(splitAdditions)
+
     if args.feedback:
         subSample = 32
         feedback.plotFeedback(audio_segs,subSample,silenceScale)
-    return len(audio_segs)
+        feedback.plotHistogram(lengths)
+        feedback.plotOutliers(audio_segs, splitCandidates, subSample)
+
+    return len(audio_segs) + int(extraPeeps)
 
 if __name__ == '__main__':
     parser = createParser()
