@@ -29,6 +29,10 @@ def createParser():
                         dest='feedback',
                         action='store_true',
                         help='Generates a feedback image')
+    parser.add_argument('--splitFeedback',
+                        dest='splittingFeedback',
+                        action='store_true',
+                        help='Generates a feedback image')
     parser.set_defaults(feature=False)
     return parser
 
@@ -93,11 +97,13 @@ def main(args):
     splitAdditions = np.round(lengths[splitCandidates]/mean) - 1.0
     extraPeeps = np.sum(splitAdditions)
 
+    subSample = 32
     if args.feedback:
-        subSample = 32
-        feedback.plotFeedback(audio_segs,subSample,silenceScale)
+        feedback.plotFeedback(audio_segs, subSample, silenceScale)
+    if args.splittingFeedback:
         feedback.plotHistogram(lengths)
-        feedback.plotOutliers(audio_segs, splitCandidates, subSample)
+        splitSegs = (audio_segs[ind[0]] for ind in splitCandidates)
+        feedback.plotFeedback(splitSegs, subSample, silenceScale)
 
     return len(audio_segs) + int(extraPeeps)
 
