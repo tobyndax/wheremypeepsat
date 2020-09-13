@@ -18,7 +18,6 @@ Settings:
 * Boolean to generate feedback image?
 
 ## Todo
-* Fix so that feedback is optional 
-* Fix so that options are actually used
-*
-
+* Add tests for multiple dataset
+* Write documentation for all options
+* Add an image to the readme
