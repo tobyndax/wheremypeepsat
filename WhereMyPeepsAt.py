@@ -3,9 +3,8 @@ import argparse
 import os
 from pydub import AudioSegment, utils
 from pydub.silence import split_on_silence
-import plotly.graph_objects as go
 import numpy as np
-
+import feedback
 
 def createParser():
     parser = argparse.ArgumentParser(
@@ -56,6 +55,7 @@ def main(args):
     if start > end or start < 0 or end > len(sound_file):
         print("Incorrect start or end values")
         sys.exit(1)
+
     if args.sil is not None:
         silenceLevel = args.sil
     else:
@@ -74,39 +74,9 @@ def main(args):
     )
 
     if args.feedback:
-        offset = 0
         subSample = 32
-        fig = go.Figure()
-        for i, seg in enumerate(audio_segs):
-            y = np.array(seg.get_array_of_samples())
-            start = offset
-            end = len(seg) + offset
-            offset = end
-            t = np.linspace(start, end ,len(y))
-            fig.add_trace(
-                go.Scatter(x=t[::subSample]/1000, y=y[::subSample],
-                           mode='lines',
-                           name='lines'))
-        fig.add_trace(
-            go.Scatter(x=np.array([0, end])/1000, y=np.array([silenceScale, silenceScale]),
-                       mode='lines',
-                       name='lines'))
-        fig.update_layout(showlegend=False)
-        # Add range slider
-        fig.update_layout(
-            xaxis=dict(
-                rangeslider=dict(
-                    visible=True
-                ),
-                type="linear"
-            )
-        )
-        initial_range = [0, 10]
-        fig['layout']['xaxis'].update(range=initial_range)
-        fig.show()
-
+        feedback.plotFeedback(audio_segs,subSample,silenceScale)
     return len(audio_segs)
-
 
 if __name__ == '__main__':
     parser = createParser()
