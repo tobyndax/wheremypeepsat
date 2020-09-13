@@ -75,18 +75,3 @@ def plotHistogram(lengths):
     fig = go.Figure([data])
     fig.show()
 
-def plotOutliers(audio_segs, splitCandidates,subSample):
-    offset = 0
-    fig = go.Figure()
-    for index in splitCandidates:
-        seg = audio_segs[index[0]]
-        y = np.array(seg.get_array_of_samples())
-        start = offset
-        end = len(seg) + offset
-        offset = end
-        t = np.linspace(start, end ,len(y))
-        fig.add_trace(
-            go.Scatter(x=t[::subSample]/1000, y=y[::subSample],
-                       mode='lines',
-                       name='lines'))
-    fig.show()
