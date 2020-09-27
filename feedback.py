@@ -41,6 +41,7 @@ plotly.offline.offline.build_save_image_post_script = script_decorator(plotly.of
 
 def plotFeedback(audio_segs, subSample, silenceScale):
     offset = 0
+    end = 0
     fig = go.Figure()
     for i, seg in enumerate(audio_segs):
         y = np.array(seg.get_array_of_samples())
