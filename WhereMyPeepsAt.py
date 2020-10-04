@@ -25,14 +25,17 @@ def createParser():
     parser.add_argument('--end',
                         type=float,
                         help='End time in ms where to end the processing')
+
     parser.add_argument('--feedback',
                         dest='feedback',
                         action='store_true',
                         help='Generates a feedback image')
+
     parser.add_argument('--splitFeedback',
                         dest='splittingFeedback',
                         action='store_true',
                         help='Generates a feedback image')
+
     parser.set_defaults(feature=False)
     return parser
 
@@ -99,11 +102,11 @@ def main(args):
 
     subSample = 32
     if args.feedback:
-        feedback.plotFeedback(audio_segs, subSample, silenceScale)
+        feedback.plotFeedback(audio_segs, subSample, silenceScale, splitCandidates)
     if args.splittingFeedback:
         feedback.plotHistogram(lengths)
         splitSegs = (audio_segs[ind[0]] for ind in splitCandidates)
-        feedback.plotFeedback(splitSegs, subSample, silenceScale)
+        feedback.plotFeedback(splitSegs, subSample, silenceScale, splitCandidates)
 
     return len(audio_segs) + int(extraPeeps)
 
