@@ -102,11 +102,11 @@ def main(args):
 
     subSample = 32
     if args.feedback:
-        feedback.plotFeedback(audio_segs, subSample, silenceScale, splitCandidates)
+        feedback.plotFeedback(audio_segs, start, subSample, silenceScale, splitCandidates)
     if args.splittingFeedback:
         feedback.plotHistogram(lengths)
         splitSegs = (audio_segs[ind[0]] for ind in splitCandidates)
-        feedback.plotFeedback(splitSegs, subSample, silenceScale, splitCandidates)
+        feedback.plotFeedback(splitSegs, start, subSample, silenceScale, splitCandidates)
 
     return len(audio_segs) + int(extraPeeps)
 

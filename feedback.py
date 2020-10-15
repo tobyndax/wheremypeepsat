@@ -45,8 +45,8 @@ def addAnnotation(fig, x, y):
         y = y,
         text ="This segment was split")
 
-def plotFeedback(audio_segs, subSample, silenceScale, splitCandidates):
-    offset = 0
+def plotFeedback(audio_segs, offset, subSample, silenceScale, splitCandidates):
+    initialOffset = offset
     end = 0
     fig = go.Figure()
     for i, seg in enumerate(audio_segs):
@@ -63,7 +63,7 @@ def plotFeedback(audio_segs, subSample, silenceScale, splitCandidates):
             addAnnotation(fig,start/1000 + (end - start)/2000,max(y))
 
     fig.add_trace(
-        go.Scatter(x=np.array([0, end])/1000, y=np.array([silenceScale, silenceScale]),
+        go.Scatter(x=np.array([initialOffset, end])/1000, y=np.array([silenceScale, silenceScale]),
                    mode='lines',
                    name='lines'))
     fig.update_annotations(dict(
@@ -84,8 +84,10 @@ def plotFeedback(audio_segs, subSample, silenceScale, splitCandidates):
             type="linear"
         )
     )
-    initial_range = [0, 10]
+    initial_range = [initialOffset/1000, initialOffset/1000 + 10]
     fig['layout']['xaxis'].update(range=initial_range)
+
+
     plotly.offline.plot(fig)
 
 def plotHistogram(lengths):
