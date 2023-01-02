@@ -12,6 +12,7 @@ Then counts the segments and outputs the amount of segments.
 In behavioral research with fowl one sometimes do what's called a peep-test.
 Where you need to count the number of times a bird peeps during a time-period.
 Manual counting is not particularly reliable or repeatable.
+For instance like in [this paper](https://liu.diva-portal.org/smash/record.jsf?dswid=-8294).
 
 ## Settings
 The tool can be run from the commandline using the following command:
