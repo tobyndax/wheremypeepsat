@@ -58,7 +58,7 @@ This can be done with for instance FFMPEG. From a commandline use `ffmpeg -i vid
 
 ### Linux
 1) Install python and ffmpeg using, for instance apt.
-2) Use `terminal` to extract sound from the video and then proceed with using the counting tool.
+2) Launch a `terminal` and use ffmpeg to extract sound from the video and then proceed with using the counting tool.
 
 ### Mac
 Follow similar instructions as linux, but use homebrew instead for installation.
