@@ -33,18 +33,16 @@ def downloadffmpeg():
 
 def main(args):
     def checkFileValid(filePath):
-        print(filePath)
         fileExists = Path.exists(filePath)
         return fileExists
 
-    print(args.inputFile)
     filePath = Path(args.inputFile).resolve().absolute()
 
     if not checkFileValid(filePath):
         print("File does not exist")
+        print(filePath)
         sys.exit(1)
 
-    print(filePath)
     if not checkFileValid(Path("ffmpeg.zip")):
         downloadffmpeg()
         unzipffmpeg()
