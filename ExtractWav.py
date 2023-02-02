@@ -1,11 +1,11 @@
 import argparse
 import sys
-import os
 import requests
 from pathlib import Path
 import zipfile
 from glob import glob
 import subprocess
+
 
 def createParser():
     parser = argparse.ArgumentParser(
@@ -14,13 +14,14 @@ def createParser():
     parser.add_argument('inputFile',
                         help='file to be processed')
 
-
     parser.set_defaults(feature=False)
     return parser
+
 
 def unzipffmpeg():
     with zipfile.ZipFile("ffmpeg.zip", 'r') as zip_ref:
         zip_ref.extractall("ffmpeg")
+
 
 def downloadffmpeg():
     url = 'https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip'
@@ -28,6 +29,7 @@ def downloadffmpeg():
     r = requests.get(url, allow_redirects=True)
     open('ffmpeg.zip', 'wb').write(r.content)
     print("Download finished")
+
 
 def main(args):
     def checkFileValid(filePath):
@@ -52,6 +54,7 @@ def main(args):
     outputFilePath = filePath.with_suffix(".wav")
     subprocess.run([exePath, "-i", filePath, outputFilePath], shell=True, check=True)
     return 0
+
 
 if __name__ == '__main__':
     parser = createParser()
