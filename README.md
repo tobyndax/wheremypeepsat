@@ -102,6 +102,12 @@ From a command prompt (cmd) navigate to the downloaded repository. `cd "path to 
 
 #### FFMPEG
 
+##### Option 1 (windows only):
+Run the script `python ExtractWav.py myInputFile.mp4` which will download ffmpeg
+then convert the file, placing it next to the input file.
+
+##### Option 2:
+
 Download and install ffmpeg. You can download the latest version of ffmpeg from
 the official website at https://www.ffmpeg.org/. Once the download is complete,
 double-click the installation file and follow the prompts to install ffmpeg on
@@ -128,8 +134,9 @@ more information on using ffmpeg.
 
 1) Open a command prompt, win-key + type cmd.
 2) Navigate to the repository where you downloaded it. `cd "path to downloaded repository"`
-3) Run the tool `python WhereMyPeepsAt.py soundFile.wav --start 1500 --end 61500 --feedback`
-This assumes that the soundFile.wav is placed in the same directory. You can of course place it somewhere else and
+3) Run the tool `python ExtractWav.py myFile.mp4`
+4) Run the tool `python WhereMyPeepsAt.py myFile.wav --start 1500 --end 61500 --feedback`
+This assumes that the myFile.mp4 is placed in the same directory. You can of course place it somewhere else and
 specify the path to there instead.
 
 There are two audio files in the repository for testing purposes, you can test one of them by running
