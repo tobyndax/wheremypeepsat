@@ -39,13 +39,13 @@ def script_decorator(func):
 
 plotly.offline.offline.build_save_image_post_script = script_decorator(plotly.offline.offline.build_save_image_post_script)
 
-def addAnnotation(fig, x, y):
+def addAnnotation(fig, x, y, numSplits):
     fig.add_annotation(
         x = x,
         y = y,
-        text ="This segment was split")
+        text =f"This segment was split into {(numSplits[0] + 1):.0f}")
 
-def plotFeedback(audio_segs, offset, subSample, silenceScale, splitCandidates):
+def plotFeedback(audio_segs, offset, subSample, silenceScale, splitCandidates, splitCount):
     initialOffset = offset
     end = 0
     fig = go.Figure()
@@ -60,7 +60,8 @@ def plotFeedback(audio_segs, offset, subSample, silenceScale, splitCandidates):
                        mode='lines',
                        name='lines'))
         if i in splitCandidates:
-            addAnnotation(fig,start/1000 + (end - start)/2000,max(y))
+            index = np.where(splitCandidates == i)
+            addAnnotation(fig,start/1000 + (end - start)/2000,max(y), splitCount[index])
 
     fig.add_trace(
         go.Scatter(x=np.array([initialOffset, end])/1000, y=np.array([silenceScale, silenceScale]),
