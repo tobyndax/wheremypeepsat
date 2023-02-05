@@ -3,8 +3,10 @@ import argparse
 import os
 from pydub import AudioSegment, utils
 from pydub.silence import split_on_silence
+from pydub.effects import high_pass_filter
 import numpy as np
 import feedback
+
 
 def createParser():
     parser = argparse.ArgumentParser(
@@ -36,8 +38,14 @@ def createParser():
                         action='store_true',
                         help='Generates a feedback image')
 
+    parser.add_argument('--backgroundSuppression',
+                        dest='bgSuppress',
+                        action='store_true',
+                        help='Removes low frequencies before processing the audio')
+
     parser.set_defaults(feature=False)
     return parser
+
 
 def main(args):
     def checkFileValid(filePath):
@@ -51,6 +59,9 @@ def main(args):
         sys.exit(1)
 
     sound_file = AudioSegment.from_wav(args.wavFile)
+
+    if(args.bgSuppress):
+        sound_file = high_pass_filter(sound_file, 2500)
 
     start = 0
     end = len(sound_file)
@@ -67,7 +78,6 @@ def main(args):
         silenceLevel = args.sil
     else:
         silenceLevel = sound_file.dBFS - 10
-
 
     silenceScale = sound_file.max_possible_amplitude * utils.db_to_float(silenceLevel)
     sound_file = sound_file[start:end]
