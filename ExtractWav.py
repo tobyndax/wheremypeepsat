@@ -26,8 +26,20 @@ def unzipffmpeg():
 def downloadffmpeg():
     url = 'https://www.gyan.dev/ffmpeg/builds/ffmpeg-release-essentials.zip'
     print("Downloading ffmpeg, this might take a while...")
-    r = requests.get(url, allow_redirects=True)
-    open('ffmpeg.zip', 'wb').write(r.content)
+    r = requests.get(url, allow_redirects=True, stream=True)
+
+    total_size = int(r.headers.get('content-length', 0))
+    block_size = 1024  # 1 Kibibyte
+
+    dl = 0
+    with open('ffmpeg.zip', 'wb') as f:
+        for data in r.iter_content(block_size):
+            f.write(data)
+            dl += len(data)
+            done = int(50 * dl / total_size)
+            sys.stdout.write("\r[%s%s]" % ('=' * done, ' ' * (50 - done)))
+            sys.stdout.flush()
+
     print("Download finished")
 
 
