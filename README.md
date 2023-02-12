@@ -106,6 +106,9 @@ From a command prompt (cmd) navigate to the downloaded repository. `cd "path to 
 Run the script `python ExtractWav.py myInputFile.mp4` which will download ffmpeg
 then convert the file, placing it next to the input file.
 
+It's also possible to run the tool with a directory as an input. It will then attempt to convert each file in the
+directory. `python ExtractWav.py testData\`
+
 ##### Option 2:
 
 Download and install ffmpeg. You can download the latest version of ffmpeg from
