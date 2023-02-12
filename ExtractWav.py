@@ -1,5 +1,6 @@
 import argparse
 import sys
+from sys import platform
 import requests
 from pathlib import Path
 import zipfile
@@ -9,10 +10,10 @@ import subprocess
 
 def createParser():
     parser = argparse.ArgumentParser(
-        description='Extracts the sound from a video file')
+        description='Extracts the sound from a video file or all files in a directory')
 
-    parser.add_argument('inputFile',
-                        help='file to be processed')
+    parser.add_argument('inputPath',
+                        help='path to be processed. If the inputPath is a directory instead of a file all files inside the directory will be processed')
 
     parser.set_defaults(feature=False)
     return parser
@@ -43,27 +44,43 @@ def downloadffmpeg():
     print("Download finished")
 
 
+def checkFileValid(filePath):
+    fileExists = Path.exists(filePath)
+    return fileExists
+
+
 def main(args):
-    def checkFileValid(filePath):
-        fileExists = Path.exists(filePath)
-        return fileExists
 
-    filePath = Path(args.inputFile).resolve().absolute()
+    path = Path(args.inputPath).resolve().absolute()
 
-    if not checkFileValid(filePath):
+    if not checkFileValid(path):
         print("File does not exist")
-        print(filePath)
+        print(path)
         sys.exit(1)
 
-    if not checkFileValid(Path("ffmpeg.zip")):
-        downloadffmpeg()
-        unzipffmpeg()
+    if platform == "linux" or platform == "linux2":
+        exePath = "ffmpeg"
+    else:
+        if not checkFileValid(Path("ffmpeg.zip")):
+            downloadffmpeg()
+            unzipffmpeg()
 
-    exePath = glob("ffmpeg/**/ffmpeg.exe", recursive=True)[0]
+        exePath = glob("ffmpeg/**/ffmpeg.exe", recursive=True)[0]
 
-    outputFilePath = filePath.with_suffix(".wav")
-    subprocess.run([exePath, "-i", filePath, outputFilePath], shell=True, check=True)
-    return 0
+    # File case
+    if path.is_file():
+        outputFilePath = path.with_suffix(".wav")
+        subprocess.run([exePath, "-i", path, outputFilePath], check=True)
+        return 0
+    else:
+        files = [f for f in path.glob('*') if f.is_file()]
+        for f in files:
+            if f.suffix == '.wav':
+                continue
+            outputFilePath = f.with_suffix(".wav")
+            subprocess.run([exePath, "-i", str(f), str(outputFilePath), '-loglevel', 'error', '-y'], check=False)
+            print(f"Converted {f}")
+        return 0
 
 
 if __name__ == '__main__':
