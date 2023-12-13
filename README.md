@@ -63,6 +63,11 @@ This can be done with for instance FFMPEG. From a commandline use `ffmpeg -i vid
 ### Mac
 Follow similar instructions as linux, but use homebrew instead for installation.
 
+To find the exact starting position in a sound or video file to millisecond can
+be tricky on Mac as QuickTime doesn't show ms in it's bidea bar. An alternative
+would be to use [iina](https://iina.io/). This can be installed with
+`brew install --cask iina`
+
 ### Windows
 Download this whole repository, which is most easily done under "Releases" found to the right on the github page.
 
